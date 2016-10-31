@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec python /usr/local/bin/scribe_log --host=localhost --port=1463 --category=darci_mobile_access --file /var/log/httpd/www.example.com-access.log
