@@ -1,0 +1,28 @@
+#!/bin/sh 
+
+log="/var/log/httpd/access_log"
+out="/var/tmp/access_log.out"
+
+awk -vDate=`date -d'now-5 minutes' +[%d/%b/%Y:%H:%M:%S` ' { if ($6 > Date) print }' $log > $out
+
+
+if [ "$1" = "config" ]; then
+        echo 'graph_title Apache Bot Access'
+        echo 'graph_args --base 1000 -l 0'
+        echo 'graph_vlabel requests / minute'
+        echo 'graph_category apache'
+        echo 'googlebot.label GoogleBot Access'
+        echo 'msnbot.label MsnBot Access'
+        echo 'yahoo.label Yahoo! Slurp Access'
+        echo 'facebook.label Facebook External Hit Access'
+        echo 'bingbot.label BingBot Access'
+        echo 'voltron.label Voltron Access'
+        exit 0
+fi
+
+	echo googlebot.value `grep -i googlebot $out | wc -l | awk '{print $1/5}'`
+	echo msnbot.value `grep -i msnbot $out | wc -l | awk '{print $1/5}'`
+	echo yahoo.value `grep -i "yahoo! slurp" $out | wc -l | awk '{print $1/5}'`
+	echo facebook.value `grep -i facebookexternalhit $out | wc -l | awk '{print $1/5}'`
+	echo bingbot.value `grep -i bingbot $out | wc -l | awk '{print $1/5}'`
+	echo voltron.value `grep -i voltron $out | wc -l | awk '{print $1/5}'`
