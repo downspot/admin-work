@@ -1,7 +1,33 @@
 #!/bin/sh 
+#  -*- sh -*-
+
+: << =cut
+
+=head1 NAME
+
+apache_bot_access - Monitor various bots
+
+=head1 CONFIGURATION
+
+Output for awk must be changed depending on date field in access log.
+
+[apache_bot_access]
+    user root
+
+=head1 AUTHOR
+
+Joel Flickinger <joel@saldino.net>
+
+=head1 LICENSE
+
+GPLv2
+
+=cut
+
 
 log="/var/log/httpd/access_log"
 out="/var/tmp/access_log.out"
+
 
 awk -vDate=`date -d'now-5 minutes' +[%d/%b/%Y:%H:%M:%S` ' { if ($6 > Date) print }' $log > $out
 
@@ -19,7 +45,6 @@ if [ "$1" = "config" ]; then
         echo 'voltron.label Voltron Access'
         exit 0
 fi
-
 	echo googlebot.value `grep -i googlebot $out | wc -l | awk '{print $1/5}'`
 	echo msnbot.value `grep -i msnbot $out | wc -l | awk '{print $1/5}'`
 	echo yahoo.value `grep -i "yahoo! slurp" $out | wc -l | awk '{print $1/5}'`
