@@ -1,0 +1,50 @@
+#!/bin/sh
+#  -*- sh -*-
+
+: << =cut
+
+=head1 NAME
+
+apache_response_times - Monitor Apache response times in milliseconds non-integer 
+
+=head1 CONFIGURATION
+
+Output for awk must be changed depending on date field in access log.
+
+[apache_response_times]
+    user root
+
+=head1 AUTHOR
+
+Joel Flickinger <joel@saldino.net>
+
+=head1 LICENSE
+
+GPLv2
+
+=cut
+
+
+log="/var/log/httpd/access_log"
+out="/tmp/out_apache_response_times.txt"
+count="/tmp/count_apache_response_times.txt"
+
+
+awk -vDate=`date -d'now-5 minutes' +[%d/%b/%Y:%H:%M:%S` ' { if ($6 > Date) print $1 }' $log | wc -l > $count
+
+awk -vDate=`date -d'now-5 minutes' +[%d/%b/%Y:%H:%M:%S` ' { if ($6 > Date) print $1 }' $log | awk '{ SUM += $1} END { print SUM }' > $out
+
+
+if [ "$1" = "config" ]; then
+        echo 'graph_title Apache Response Times'
+        echo 'graph_args --base 1000 -l 0'
+        echo 'graph_vlabel milisecond / response'
+        echo 'graph_category apache'
+        echo 'response.label Response Time'
+        exit 0
+fi
+	echo response.value $((`cat $out` / `cat $count` / 1000 / 5))
+
+
+rm $out 
+rm $count
