@@ -1,0 +1,12 @@
+/var/log/mysql/error.log {
+    daily
+    compress
+    create 660 mysql mysql
+    dateext
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+       /usr/bin/mysql -u flusher -p{{ salt['pillar.get']('db_users:flusher_user_pass') }} -e 'FLUSH LOGS;'
+    endscript
+    rotate 7
