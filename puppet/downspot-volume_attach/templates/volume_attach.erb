@@ -22,7 +22,7 @@ fi
 
 # find a random volume to mount
 while [ ! -e "$dev" ]; do 
-  ec2-attach-volume `ec2-describe-volumes | grep available | awk '$3 == "<%= @options_hash['size'] %>"' | awk '$5 == "<%= ec2_placement_availability_zone %>"' | awk '$8 == "<%= @options_hash['type'] %>"' | awk '{print $2}' | head -1` -i <%= ec2_instance_id %> -d /dev/xvdk > /dev/null 2>&1
+  ec2-attach-volume `ec2-describe-volumes | grep available | awk '$3 == "<%= @options_hash['size'] %>"' | awk '$5 == "<%= ec2_placement_availability_zone %>"' | awk '$8 == "<%= @options_hash['type'] %>"' | awk '{print $2}' | head -1` -i <%= ec2_instance_id %> -d $dev > /dev/null 2>&1
   sleep 5
   ctr=`expr $ctr + 1`
   if [ $ctr -eq $max_tries ]; then

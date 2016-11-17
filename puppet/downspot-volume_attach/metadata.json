@@ -1,6 +1,6 @@
 {
   "name": "downspot-volume_attach",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "downspot",
   "summary": "attaching available formatted EBS volumes to instance",
   "license": "Apache 2.0",
