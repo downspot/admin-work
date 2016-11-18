@@ -1,0 +1,49 @@
+#!/bin/sh 
+
+# chkconfig: 2345 16 80
+# description: Attach and mount a single EBS volume 
+
+
+# source ec2 info
+. /etc/profile.d/ec2.sh
+
+# device
+dev="<%= @options_hash['device'] %>"
+
+# number of tries, find volume and mount
+max_tries="3"
+ctr=0
+
+# make mount point
+mount="<%= @options_hash['mountpoint'] %>"
+if [ ! -d $mount ]; then
+  mkdir -p $mount
+fi
+
+# find a random volume to mount
+while [ ! -e "$dev" ]; do 
+  ec2-attach-volume `ec2-describe-volumes | grep available | awk '$3 == "<%= @options_hash['size'] %>"' | awk '$5 == "<%= ec2_placement_availability_zone %>"' | awk '$8 == "<%= @options_hash['type'] %>"' | awk '{print $2}' | head -1` -i <%= ec2_instance_id %> -d $dev > /dev/null 2>&1
+  sleep 5
+  ctr=`expr $ctr + 1`
+  if [ $ctr -eq $max_tries ]; then
+    echo "Not able to attach volume"
+    exit 0
+  fi
+done
+
+# mount if volume is not mounted
+grep $dev /proc/mounts > /dev/null
+
+if [ $? == "1" ]; then
+  while [ `grep $dev /proc/mounts | wc -l` == "0" ]; do  
+    mount -o noatime,rw $dev $mount
+    sleep 5
+    ctr=`expr $ctr + 1`
+    if [ $ctr -eq $max_tries ]; then
+      echo "Not able to mount volume"
+      exit 0
+    fi
+  done
+else
+  exit 0
+fi
