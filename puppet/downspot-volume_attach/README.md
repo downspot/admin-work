@@ -14,6 +14,7 @@
 ```
 volume_attach::config_file_template: 'volume_attach/volume_attach.erb'
 volume_attach::options_hash:
+  device: /dev/xvdk
   type: standard
   size: 1024
   mountpoint: /storage

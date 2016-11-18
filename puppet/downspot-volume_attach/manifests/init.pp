@@ -1,4 +1,5 @@
 class volume_attach (
+    $dev 		  = '/dev/xvdk',
     $config_file_template = 'volume_attach/volume_attach.erb',
     $options_hash         = {},
 )   {
@@ -23,7 +24,7 @@ class volume_attach (
     exec { 'volume_attach':
 	command => '/etc/init.d/volume_attach',
 	path    => "/usr/bin:/usr/sbin:/bin",
-	onlyif  => 'test `grep "/dev/xvdk" /proc/mounts | wc -l` == "0"',
+	unless  => "grep ${dev} /proc/mounts",
     }
 
 }

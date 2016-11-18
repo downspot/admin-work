@@ -8,7 +8,7 @@
 . /etc/profile.d/ec2.sh
 
 # device
-dev="/dev/xvdk"
+dev="<%= @options_hash['device'] %>"
 
 # number of tries, find volume and mount
 max_tries="3"
