@@ -39,7 +39,7 @@ fi
 # run the backup
 echo ""
 echo -e "Running xtrabackup on `hostname`... \c"
-innobackupex --user=$user --password=$pass --no-timestamp --slave-info --safe-slave-backup --backup --compress --compress-threads=5 $backupdir/$date > $dumplog 2>&1
+innobackupex --user=$user --password=$pass --parallel=4 --no-timestamp --slave-info --safe-slave-backup --backup --compress --compress-threads=4 $backupdir/$date > $dumplog 2>&1
 echo "Done."
 echo ""
 echo "Backup log can be found at `hostname`:"$dumplog""
