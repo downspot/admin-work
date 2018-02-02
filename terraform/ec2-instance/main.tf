@@ -41,6 +41,7 @@ resource "aws_instance" "example" {
   user_data              = "${var.user_data}"
 
   tags {
+    Name = "${var.tag_env}"
     ProductCode = "value"
     InventoryCode = "value"
     Environment = "${var.tag_env}"
