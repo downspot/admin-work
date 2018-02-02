@@ -33,7 +33,7 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_instance" "example" {
-  ami                    = "${data.aws_ami.amazon_linux.id}"
+  ami 			 = "${data.aws_ami.amazon_linux.id}"
   instance_type          = "${var.instance_type}"
   subnet_id              = "${var.subnet_id}"
   key_name               = "${var.key_name}"
@@ -43,14 +43,14 @@ resource "aws_instance" "example" {
 
   tags {
     Name = "${var.tag_name}"
-    ProductCode = "ID"
-    InventoryCode = "ID"
+    ProductCode = "example"
+    InventoryCode = "example"
     Environment = "${var.tag_env}"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "example" {
-    alarm_name          = "${var.tag_name}"
+    alarm_name          = "${aws_instance.example.id}"
     comparison_operator = "GreaterThanOrEqualToThreshold"
     evaluation_periods  = "2"
     metric_name         = "StatusCheckFailed_System"
@@ -61,7 +61,7 @@ resource "aws_cloudwatch_metric_alarm" "example" {
     alarm_description   = "Created from EC2 Console"
     alarm_actions       = ["arn:aws:automate:us-east-1:ec2:recover"]
       dimensions {
-        InstanceId      = "${aws_instance.example.id}"
+        InstanceId 	= "${aws_instance.example.id}"
     }
 }
 
