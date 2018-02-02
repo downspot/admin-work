@@ -6,6 +6,7 @@ variable "subnet_id" {}
 variable "iam_instance_profile" {}
 variable "tag_env" {}
 variable "user_data" {}
+variable "tag_name" {}
 
 provider "aws" {
   region = "${var.aws_region}"
@@ -41,7 +42,7 @@ resource "aws_instance" "example" {
   user_data              = "${var.user_data}"
 
   tags {
-    Name = "${var.tag_env}"
+    Name = "${var.tag_name}"
     ProductCode = "value"
     InventoryCode = "value"
     Environment = "${var.tag_env}"

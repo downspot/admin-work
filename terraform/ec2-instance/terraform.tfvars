@@ -1,5 +1,6 @@
 aws_region = "us-east-1"
-tag_env = "dev"
+tag_name = "name"
+tag_env = "tag"
 instance_type = "t2.large"
 subnet_id = "subnet-id"
 vpc_security_group_ids = "sg-id"
