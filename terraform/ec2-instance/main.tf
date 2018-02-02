@@ -33,7 +33,7 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_instance" "example" {
-  ami 			 = "${data.aws_ami.amazon_linux.id}"
+  ami                    = "${data.aws_ami.amazon_linux.id}"
   instance_type          = "${var.instance_type}"
   subnet_id              = "${var.subnet_id}"
   key_name               = "${var.key_name}"
@@ -43,10 +43,26 @@ resource "aws_instance" "example" {
 
   tags {
     Name = "${var.tag_name}"
-    ProductCode = "value"
-    InventoryCode = "value"
+    ProductCode = "ID"
+    InventoryCode = "ID"
     Environment = "${var.tag_env}"
   }
+}
+
+resource "aws_cloudwatch_metric_alarm" "example" {
+    alarm_name          = "${var.tag_name}"
+    comparison_operator = "GreaterThanOrEqualToThreshold"
+    evaluation_periods  = "2"
+    metric_name         = "StatusCheckFailed_System"
+    namespace           = "AWS/EC2"
+    period              = "60"
+    statistic           = "Maximum"
+    threshold           = "1.0"
+    alarm_description   = "Created from EC2 Console"
+    alarm_actions       = ["arn:aws:automate:us-east-1:ec2:recover"]
+      dimensions {
+        InstanceId      = "${aws_instance.example.id}"
+    }
 }
 
 
@@ -55,9 +71,9 @@ output "image_id" {
 }
 
 output "id" {
-  value       = ["${aws_instance.kafka.id}"]
+  value       = ["${aws_instance.example.id}"]
 }
 
 output "private_ip" {
-  value       = ["${aws_instance.kafka.private_ip}"]
+  value       = ["${aws_instance.example.private_ip}"]
 }
